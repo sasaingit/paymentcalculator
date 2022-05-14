@@ -2,7 +2,7 @@
   <div id="app" class="header">
     <div id="nav" class="navbar navbar-light bg-light navbar-expand-lg">
       <router-link class="navbar-brand" to="/">Calculator</router-link>
-      <router-link class="navbar-brand" to="/list">Lender List</router-link>
+      <router-link class="navbar-brand" to="/list">Lenders</router-link>
     </div>
     <router-view />
   </div>

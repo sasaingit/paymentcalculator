@@ -1,24 +1,33 @@
 <template>
   <div class="lenders">
-    <h3>Lenders</h3>
+    <h3>Manage rules for lender: {{ this.lender.item_name }}</h3>
     <div class="card">
-      <div class="card-header">Add a new lender</div>
+      <div class="card-header">Add a new rule</div>
       <div class="card-body">
         <form class="form-inline" v-on:submit.prevent="onSubmit">
           <div class="form-group">
-            <label>ID</label>
+            <label>Order</label>
             <input
-              v-model="itemData.item_id"
-              type="text"
+              v-model="itemData.order"
+              type="number"
               class="form-control ml-sm-2 mr-sm-4 my-2"
               required
             />
           </div>
           <div class="form-group">
-            <label>Name</label>
+            <label>Type</label>
+            <v-select
+              :options="ruleOptions()"
+              v-model="itemData.rule_type"
+              placeholder="select"
+              class="form-control ml-sm-2 mr-sm-4 my-2"
+            />
+          </div>
+          <div class="form-group">
+            <label>Input Value</label>
             <input
-              v-model="itemData.item_name"
-              type="text"
+              v-model="itemData.input_value"
+              type="number"
               class="form-control ml-sm-2 mr-sm-4 my-2"
               required
             />
@@ -31,23 +40,31 @@
     </div>
 
     <div class="card mt-5">
-      <div class="card-header">Lender List</div>
+      <div class="card-header">Applied rules</div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Lender ID</th>
-                <th>Lender Name</th>
+                <th scope="col">Rule order</th>
+                <th>Rule type</th>
+                <th>Rule input</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in getAllItems" v-bind:key="item.id">
+              <tr v-for="item in lender.rules" v-bind:key="item.id">
                 <template v-if="editId == item.id">
-                  <td><input v-model="editItemData.item_id" type="text" /></td>
+                  <td><input v-model="editItemData.order" type="number" /></td>
                   <td>
-                    <input v-model="editItemData.item_name" type="text" />
+                    <v-select
+                      :options="ruleOptions()"
+                      v-model="editItemData.rule_type"
+                      placeholder="select"
+                    />
+                  </td>
+                  <td>
+                    <input v-model="editItemData.input_value" type="number" />
                   </td>
                   <td>
                     <span class="icon">
@@ -62,10 +79,13 @@
                 </template>
                 <template v-else>
                   <td>
-                    {{ item.item_id }}
+                    {{ item.order }}
                   </td>
                   <td>
-                    {{ item.item_name }}
+                    {{ item.rule_type.label }}
+                  </td>
+                  <td>
+                    {{ item.input_value }}
                   </td>
                   <td>
                     <a href="#" class="icon">
@@ -76,15 +96,6 @@
                     <a href="#" class="icon">
                       <i v-on:click="onEdit(item)" class="fa fa-pencil">Edit</i>
                     </a>
-                    <router-link
-                      :to="{
-                        name: 'Rules',
-                        params: { id: item.id },
-                      }"
-                      class="icon"
-                    >
-                      <i class="fa fa-eye">Rules</i>
-                    </router-link>
                   </td>
                 </template>
               </tr>
@@ -97,31 +108,64 @@
 </template>
 
 <script>
+import Vue from "vue";
 import { mapGetters, mapActions } from "vuex";
 import crudMixin from "../mixins/crudMixin";
+import vSelect from "vue-select";
+
+Vue.component("v-select", vSelect);
 
 export default {
-  name: "List",
+  name: "Rules",
   mixins: [crudMixin],
   data() {
     return {
+      lender: null,
       itemData: {
-        item_id: "",
-        item_name: "",
+        order: "",
+        rule_type: "",
+        input_value: "",
       },
     };
   },
+  created() {
+    this.lender = this.getLender(this.$route.params.id);
+  },
   computed: {
     ...mapGetters({
-      getAllItems: "getAllLenders",
-      getItem: "getLender",
+      getLender: "getLender",
     }),
   },
   methods: {
-    ...mapActions({
-      addItem: "addLender",
-      updateItem: "updateLender",
-    }),
+    ...mapActions(['addLender','updateLender']
+    ),
+    ruleOptions() {
+      return [
+        {
+          code: 1,
+          label: "rule1",
+        },
+        {
+          code: 2,
+          label: "rule2",
+        },
+      ];
+    },
+    addItem(ruleObj){
+      if (!this.lender.rules) {
+        this.lender.rules = []
+      }
+      this.lender.rules.push(ruleObj)
+      this.updateLender(this.lender)
+    },
+    updateItem(ruleObj){
+      const updatedRuleIdx = this.lender.rules.findIndex(item => item.id === ruleObj.id)
+      this.lender.rules[updatedRuleIdx] = ruleObj
+      this.updateLender(this.lender)
+    },
+    getItem(id){
+      return this.lender.rules.find(item => item.id === id)
+    }
   },
 };
 </script>

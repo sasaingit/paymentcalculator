@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Calculator from "../components/Calculator.vue";
 import List from "../components/List.vue";
+import Rules from "../components/Rules.vue";
 
 Vue.use(VueRouter);
 
@@ -15,7 +16,12 @@ const routes = [
     path: "/list",
     name: "List",
     component: List
-  }
+  },
+  {
+      path: '/rules/:id',
+      name: 'Rules',
+      component: Rules
+    }
 ];
 
 const router = new VueRouter({

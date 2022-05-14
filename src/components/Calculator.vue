@@ -58,7 +58,7 @@ export default {
     ...mapGetters({ lenders: "getAllLenders" }),
     localLenders() {
       return this.lenders.map((item) => {
-        return { label: item.lender_name, code: item.id };
+        return { label: item.item_name, code: item.id };
       });
     },
     defaultLender() {
