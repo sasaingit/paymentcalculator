@@ -1,10 +1,17 @@
 <template>
   <div class="lenders">
-    <h3>Manage rules for lender: {{ this.lender.item_name }}</h3>
+    <h3 class="text-left">
+      Manage rules for lender: {{ this.lender.item_name }}
+    </h3>
     <div class="card">
-      <div class="card-header">Add a new rule</div>
+      <div class="card-header">
+        Add a new rule
+      </div>
       <div class="card-body">
-        <form class="form-inline" v-on:submit.prevent="onSubmit">
+        <form
+          class="form-inline"
+          @submit.prevent="onSubmit"
+        >
           <div class="form-group">
             <label>Order</label>
             <input
@@ -12,7 +19,7 @@
               type="number"
               class="form-control ml-sm-2 mr-sm-4 my-2"
               required
-            />
+            >
           </div>
           <div class="form-group">
             <label>Type</label>
@@ -20,7 +27,7 @@
               :options="ruleOptions()"
               v-model="itemData.rule_type"
               placeholder="select"
-              class="form-control ml-sm-2 mr-sm-4 my-2"
+              class="form-control ml-sm-2 mr-sm-4 my-2 dropdown"
             />
           </div>
           <div class="form-group">
@@ -31,32 +38,61 @@
               step="0.0001"
               class="form-control ml-sm-2 mr-sm-4 my-2"
               required
-            />
+            >
           </div>
           <div class="ml-auto text-right">
-            <button type="submit" class="btn btn-primary my-2">Add</button>
+            <button
+              type="submit"
+              class="btn btn-primary my-2"
+            >
+              Add
+            </button>
           </div>
         </form>
       </div>
     </div>
 
     <div class="card mt-5">
-      <div class="card-header">Applied rules</div>
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-6">
+            Applied rules
+          </div>
+          <div class="col-md-6 text-right">
+            <router-link
+              :to="'/list'"
+              class="btn btn-outline-primary"
+            >
+              Go Back
+            </router-link>
+          </div>
+        </div>
+      </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Rule order</th>
+                <th scope="col">
+                  Rule order
+                </th>
                 <th>Rule type</th>
                 <th>Rule input</th>
-                <th>Action</th>
+                <th />
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in lender.rules" v-bind:key="item.id">
+              <tr
+                v-for="item in lender.rules"
+                :key="item.id"
+              >
                 <template v-if="editId == item.id">
-                  <td><input v-model="editItemData.order" type="number" /></td>
+                  <td>
+                    <input
+                      v-model="editItemData.order"
+                      type="number"
+                    >
+                  </td>
                   <td>
                     <v-select
                       :options="ruleOptions()"
@@ -65,16 +101,28 @@
                     />
                   </td>
                   <td>
-                    <input v-model="editItemData.input_value" type="number" step="0.0001"/>
+                    <input
+                      v-model="editItemData.input_value"
+                      type="number"
+                      step="0.0001"
+                    >
                   </td>
-                  <td>
-                    <span class="icon">
-                      <i @click="onEditSubmit(item.id)" class="fa fa-check"
-                        >Submit</i
-                      >
+                  <td class="text-right">
+                    <span
+                      class="icon"
+                      title="Submit"
+                    >
+                      <i
+                        @click="onEditSubmit(item.id)"
+                        class="fa fa-check"
+                      />
                     </span>
                     <span class="icon">
-                      <i @click="onCancel" class="fa fa-ban">Cancel</i>
+                      <i
+                        @click="onCancel"
+                        class="fa fa-ban"
+                        title="Cancel"
+                      />
                     </span>
                   </td>
                 </template>
@@ -88,14 +136,26 @@
                   <td>
                     {{ item.input_value }}
                   </td>
-                  <td>
-                    <a href="#" class="icon">
-                      <i v-on:click="onDelete(item.id)" class="fa fa-trash"
-                        >Delete</i
-                      >
+                  <td class="text-right">
+                    <a
+                      href="#"
+                      class="icon"
+                      title="Edit"
+                    >
+                      <i
+                        @click="onEdit(item)"
+                        class="fa fa-pencil"
+                      />
                     </a>
-                    <a href="#" class="icon">
-                      <i v-on:click="onEdit(item)" class="fa fa-pencil">Edit</i>
+                    <a
+                      href="#"
+                      class="icon"
+                      title="Delete"
+                    >
+                      <i
+                        @click="onDelete(item.id)"
+                        class="fa fa-trash"
+                      />
                     </a>
                   </td>
                 </template>
@@ -168,6 +228,10 @@ export default {
     getItem(id) {
       return this.lender.rules.find((item) => item.id === id);
     },
+    deleteItem(id) {
+      this.lender.rules = this.lender.rules.filter(item => item.id !== id)
+      this.updateLender(this.lender);
+    }
   },
 };
 </script>
@@ -175,9 +239,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
-  text-align: center;
+  text-align: left;
   margin-top: 30px;
   margin-bottom: 20px;
+  font-weight: 300;
+  margin-top: 4rem;
+  margin-left: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 .icon {
   margin-right: 10px;
@@ -185,4 +253,20 @@ h3 {
 .icon i {
   cursor: pointer;
 }
+.v-select.form-control {
+  border: 0px
+}
+.btn.btn-outline-primary{
+  border-color: #7100da;
+  color: #7100da;
+  border-radius: 5rem;
+}
+.btn.btn-outline-primary:hover{
+  background-color: #333;
+  color: #FFF;
+  border-color: #333;
+ }
+ .dropdown{
+   min-width: 150px;
+ }
 </style>

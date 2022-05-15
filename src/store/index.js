@@ -19,6 +19,11 @@ export default new Vuex.Store({
       localStorage.setItem('allLenders', JSON.stringify(allLenders));
       commit("setAllLenders", allLenders);
     },
+    deleteLender({state, commit}, lenderIdToDelete) {
+      let filteredLenders = [...state.allLenders].filter(item => item.id !== lenderIdToDelete)
+      localStorage.setItem('allLenders', JSON.stringify(filteredLenders));
+      commit("setAllLenders", filteredLenders);
+    },
     updateLender({state, commit}, updatedLender) {
       let allLenders = [...state.allLenders]
       const indexOfUpdatedLender = allLenders.findIndex(item => item.id === updatedLender.id)

@@ -1,46 +1,61 @@
 <template>
   <div class="card-body">
-    <form class="form">
-      <div class="form-group">
-        <input
-          class="form-control ml-sm-2 mr-sm-4 my-2"
-          type="number"
-          placeholder="Amount"
-          aria-label="Amount"
-          v-model="loanAmount"
-        />
-      </div>
+    <div
+      class="row my-5  justify-content-center"
+    >
+      <form
+        class="
+      form col-md-8"
+      >
+        <div class="form-group">
+          <input
+            class="form-control ml-sm-2 mr-sm-4 my-2"
+            type="number"
+            placeholder="Amount"
+            step="0.01"
+            v-model="loanAmount"
+          >
+        </div>
 
-      <div class="form-group">
-        <input
-          class="form-control ml-sm-2 mr-sm-4 my-2"
-          type="number"
-          placeholder="Term months"
-          v-model="terms"
-        />
-      </div>
+        <div class="form-group">
+          <input
+            class="form-control ml-sm-2 mr-sm-4 my-2"
+            type="number"
+            placeholder="Term Months"
+            v-model="terms"
+          >
+        </div>
 
-      <div class="form-group">
-        <v-select
-          :options="localLenders"
-          v-model="selectedLenderId"
-          placeholder="select"
-          class="form-control ml-sm-2 mr-sm-4 my-2"
-        />
-      </div>
+        <div class="form-group">
+          <v-select
+            :options="lenders"
+            v-model="selectedLenderId"
+            placeholder="Select Lender"
+            class="form-control ml-sm-2 mr-sm-4 my-2"
+          />
+        </div>
 
-      <div class="form-group">
-        <button class="btn btn-primary my-2" type="button" @click="calculate">
-          Calculate
-        </button>
-      </div>
-    </form>
+        <div class="form-group text-right my-3">
+          <button
+            class="btn btn-primary my-2"
+            type="button"
+            @click="calculate"
+          >
+            Calculate
+          </button>
+        </div>
+
+        <div class="form-group">
+          <h3>Estimated Monthly Payment</h3>
+          <h1>$ {{ this.estimatedMonthlyPayment }}</h1>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-
-import ruleTypes from "../rules_types"
+import ruleTypes from "../rules_types";
 import Vue from "vue";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
@@ -54,7 +69,8 @@ export default {
     return {
       selectedLenderId: null,
       loanAmount: null,
-      terms: null
+      terms: null,
+      estimatedMonthlyPayment: '-'
     };
   },
   methods: {
@@ -66,32 +82,35 @@ export default {
         loan_amount: parseFloat(this.loanAmount),
         terms: parseInt(this.terms),
         total_payble: 0,
-      }
-      const selectedLender = this.getLender(this.selectedLenderId.code)
+      };
+      const selectedLender = this.getLender(this.selectedLenderId.code);
 
       const input = selectedLender.rules.reduce((input, rule) => {
-          input.input_value = rule.input_value
-          const ruleMethod = ruleTypes[rule.rule_type.label].ruleMethod
-          input.total_payble = ruleMethod(input)
-          return input
-      }, inputParams)
+        input.input_value = rule.input_value;
+        const ruleMethod = ruleTypes[rule.rule_type.label].ruleMethod;
+        input.total_payble = ruleMethod(input);
+        return input;
+      }, inputParams);
 
-      console.log(input)
+      this.estimatedMonthlyPayment = input.total_payble
     },
   },
   computed: {
     ...mapGetters({
-      lenders: "getAllLenders",
+      allLenders: "getAllLenders",
       getLender: "getLender",
     }),
-    localLenders() {
-      return this.lenders.map((item) => {
+    lenders() {
+      return this.allLenders.map((item) => {
         return { label: item.item_name, code: item.id };
       });
     },
-    defaultLender() {
-      return this.localLenders[0];
-    },
   },
-}
+};
 </script>
+
+<style scoped>
+.form-group h1{
+  color: #7100da !important;
+}
+</style>

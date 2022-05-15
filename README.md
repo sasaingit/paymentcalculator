@@ -1,4 +1,4 @@
-# vuex10
+# payment calculator
 
 ## Project setup
 ```

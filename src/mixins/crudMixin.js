@@ -18,7 +18,7 @@ export default {
             this.resetData(this.itemData)
         },
         onDelete(id) {
-            id
+            this.deleteItem(id)
         },
         onEdit(item) {
             this.editId = item.id
