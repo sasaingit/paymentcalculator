@@ -31,7 +31,7 @@
             :options="lenders"
             v-model="selectedLenderId"
             placeholder="Select Lender"
-            class="form-control ml-sm-2 mr-sm-4 my-2"
+            class="form-control ml-sm-2 mr-sm-4 my-2 dropdown"
           />
         </div>
 
@@ -92,7 +92,7 @@ export default {
         return input;
       }, inputParams);
 
-      this.estimatedMonthlyPayment = input.total_payble
+      this.estimatedMonthlyPayment = input.total_payble.toFixed(2)
     },
   },
   computed: {

@@ -10,22 +10,22 @@ class Constants {
 }
 
 const ruleTypes = {
-    percentage: {
-        ruleName: "percentage",
+    interest: {
+        ruleName: "interest",
         ruleMethod: function (params) {
-            return pmt(params[Constants.INPUT_VALUE] / Constants.MONTHS_PER_YEAR, params[Constants.TERMS], params[Constants.LOAN_AMOUNT]).toFixed(Constants.NUMBER_OF_DECIMAL_PLACES)
+            return pmt(params[Constants.INPUT_VALUE] / Constants.MONTHS_PER_YEAR, params[Constants.TERMS], params[Constants.LOAN_AMOUNT])
         },
     },
-    fixedPayment: {
-        ruleName: "fixedPayment",
+    monthlyFee: {
+        ruleName: "monthlyFee",
         ruleMethod: function (params) {
-            return (params[Constants.TOTAL_PAYBLE] - params[Constants.INPUT_VALUE]).toFixed(Constants.NUMBER_OF_DECIMAL_PLACES)
+            return (params[Constants.TOTAL_PAYBLE] - params[Constants.INPUT_VALUE])
         },
     },
     brokerFee: {
         ruleName: "brokerFee",
         ruleMethod: function (params) {
-            return (params[Constants.TOTAL_PAYBLE] * (1 + (params[Constants.INPUT_VALUE] / Constants.MONTHS_PER_YEAR))).toFixed(Constants.NUMBER_OF_DECIMAL_PLACES)
+            return (params[Constants.TOTAL_PAYBLE] * (1 + (params[Constants.INPUT_VALUE] / params[Constants.TERMS])))
         },
     }
 }

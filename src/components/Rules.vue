@@ -98,6 +98,7 @@
                       :options="ruleOptions()"
                       v-model="editItemData.rule_type"
                       placeholder="select"
+                      class="dropdown"
                     />
                   </td>
                   <td>

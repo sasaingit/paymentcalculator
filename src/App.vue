@@ -77,4 +77,7 @@ span.icon.cancel{
 a.navbar-brand{
   color: #FFF !important;
 }
+.dropdown{
+  text-transform: capitalize;
+}
 </style>
