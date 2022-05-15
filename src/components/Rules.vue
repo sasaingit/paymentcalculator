@@ -28,6 +28,7 @@
             <input
               v-model="itemData.input_value"
               type="number"
+              step="0.0001"
               class="form-control ml-sm-2 mr-sm-4 my-2"
               required
             />
@@ -64,7 +65,7 @@
                     />
                   </td>
                   <td>
-                    <input v-model="editItemData.input_value" type="number" />
+                    <input v-model="editItemData.input_value" type="number" step="0.0001"/>
                   </td>
                   <td>
                     <span class="icon">
@@ -108,10 +109,13 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { mapGetters, mapActions } from "vuex";
 import crudMixin from "../mixins/crudMixin";
+import ruleTypes from "../rules_types";
+
+import { mapGetters, mapActions } from "vuex";
+
 import vSelect from "vue-select";
+import Vue from "vue";
 
 Vue.component("v-select", vSelect);
 
@@ -124,7 +128,7 @@ export default {
       itemData: {
         order: "",
         rule_type: "",
-        input_value: "",
+        input_value: ""
       },
     };
   },
@@ -137,35 +141,33 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['addLender','updateLender']
-    ),
+    ...mapActions(["addLender", "updateLender"]),
     ruleOptions() {
-      return [
-        {
-          code: 1,
-          label: "rule1",
-        },
-        {
-          code: 2,
-          label: "rule2",
-        },
-      ];
+      return Object.entries(ruleTypes).map((data, idx) => {
+        const [, item] = data
+        return {
+          code: idx,
+          label: item.ruleName
+        }
+      })
     },
-    addItem(ruleObj){
+    addItem(ruleObj) {
       if (!this.lender.rules) {
-        this.lender.rules = []
+        this.lender.rules = [];
       }
-      this.lender.rules.push(ruleObj)
-      this.updateLender(this.lender)
+      this.lender.rules.push(ruleObj);
+      this.updateLender(this.lender);
     },
-    updateItem(ruleObj){
-      const updatedRuleIdx = this.lender.rules.findIndex(item => item.id === ruleObj.id)
-      this.lender.rules[updatedRuleIdx] = ruleObj
-      this.updateLender(this.lender)
+    updateItem(ruleObj) {
+      const updatedRuleIdx = this.lender.rules.findIndex(
+        (item) => item.id === ruleObj.id
+      );
+      this.lender.rules[updatedRuleIdx] = ruleObj;
+      this.updateLender(this.lender);
     },
-    getItem(id){
-      return this.lender.rules.find(item => item.id === id)
-    }
+    getItem(id) {
+      return this.lender.rules.find((item) => item.id === id);
+    },
   },
 };
 </script>
